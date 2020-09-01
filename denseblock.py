@@ -25,7 +25,7 @@ class DenseBlock(nn.Module):
         super(DenseBlock, self).__init__()
         self.functions = nn.ModuleList()
         for i in range(repetition):
-            layer = CompositeFunction(in_channels + k * i, k, drop_prob)
+            layer = CompositeFunction(in_channels + k * i, k, drop_prob)sync('jumpDefinition')
             self.functions.append(layer)
         for m in self.modules():
             if isinstance(m, nn.Conv2d):

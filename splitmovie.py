@@ -1,7 +1,7 @@
 import cv2
 from PIL import Image, ImageStat
 
-
+# This movie
 def detect_color_image(file, thumb_size=40, MSE_cutoff=22, adjust_color_bias=True):
     pil_img = file
     bands = pil_img.getbands()
