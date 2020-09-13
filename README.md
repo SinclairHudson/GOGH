@@ -20,7 +20,7 @@ All the frames are the same size and scale too, so it's a very clean dataset. It
 #### Samples:
 Loving Vincent |  openImages
 :-------------------------:|:-------------------------:
-![](imgs/frame49250.jpg)  |  ![](imgs/0a0b3287f3246d49.jpg)
-![](imgs/frame13278.jpg)  |  ![](imgs/0a6c95dd96e2318c.jpg)
-![](imgs/frame99700.jpg)  |  ![](imgs/0a6f2cd486011383.jpg)
+![](imgs/frame49250.jpg =250x)  |  ![](imgs/0a0b3287f3246d49.jpg =250x)
+![](imgs/frame13278.jpg =250x)  |  ![](imgs/0a6c95dd96e2318c.jpg =250x)
+![](imgs/frame99700.jpg =250x)  |  ![](imgs/0a6f2cd486011383.jpg =250x)
 
