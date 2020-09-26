@@ -19,10 +19,6 @@ class singleClassDataset(Dataset):
         self.dimensions = dimensions
         self.classname = classname
         self.images = list(os.listdir(f"{path}/{split}/{classname}"))
-        self.transforms = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # normalize distribution for all channels.
-        ])
 
     def __len__(self):
         return len(self.images)
@@ -33,5 +29,4 @@ class singleClassDataset(Dataset):
         image = image.resize(dimensions)
 
         # height, then width
-        in_tensor = self.transforms(image)
         return in_tensor
