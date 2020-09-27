@@ -1,5 +1,5 @@
 import torch
-import wandb
+# import wandb
 import network
 import torchvision
 import torch.nn as nn
@@ -7,9 +7,10 @@ import torchvision.datasets as ds
 import torchvision.transforms as transforms
 import random
 import torch.nn.functional as F
+from torch.utils.data import DataLoader
 import torch.optim as optim
 from dummyNetwork import DummyDiscriminator, DummyGenerator
-from singleClassDataset import DataLoader, singleClassDataset
+from singleClassDataset import singleClassDataset
 
 
 conf = {
@@ -19,7 +20,7 @@ conf = {
     "momentum": 0.9,
     "dropout": 0.05
 }
-wandb.init(project="gogh", config=conf)
+# wandb.init(project="gogh", config=conf)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -33,15 +34,15 @@ augmentations = transforms.Compose([
 # in this directory, I have colourGogh and openImages
 Adataset = singleClassDataset(".", split="trainset",
                               transforms=augmentations,
-                              dimensions=(32,32),
+                              dimensions=(256,256),
                               classname="openImages")
 Bdataset = singleClassDataset(".", split="trainset",
                               transforms=augmentations,
-                              dimensions=(32,32),
+                              dimensions=(256,256),
                               classname="colourGogh")
 
-Adataloader = DataLoader(Adataset, batch_size=conf["batch_size"], shuffle=True, num_workers=2)
-Bdataloader = DataLoader(Bdataset, batch_size=conf["batch_size"], shuffle=True, num_workers=2)
+Adataloader = DataLoader(Adataset, batch_size=conf["batch_size"], shuffle=False, num_workers=2)
+Bdataloader = DataLoader(Bdataset, batch_size=conf["batch_size"], shuffle=False, num_workers=2)
 
 Dis_B = DummyDiscriminator(3)
 
@@ -52,12 +53,14 @@ criterion = nn.MSELoss()
 reconstruction_loss = nn.L1Loss()
 
 
-optimizer = optim.SGD(net.parameters(), lr=conf["learning_rate"], momentum=0.9)
+optimizerDisB= optim.SGD(Dis_B.parameters(), lr=conf["learning_rate"], momentum=0.9)
+optimizerGen_A2B= optim.SGD(Gen_A2B.parameters(), lr=conf["learning_rate"], momentum=0.9)
+optimizerGen_B2A= optim.SGD(Gen_B2A.parameters(), lr=conf["learning_rate"], momentum=0.9)
 
 for epoch in range(conf["epochs"]):
     l = len(Adataloader)
     for i, Aimages in enumerate(Adataloader):
-        trueB = Bdataloader.__getitem__(i) # also get a batch of B images
+        trueB = torch.unsqueeze(Bdataset.__getitem__(i), 0) # also get a batch of B images
         print(f"[{i}/{l}], epoch {epoch}.")
 
         fakeB = Gen_A2B(Aimages)
@@ -76,7 +79,11 @@ for epoch in range(conf["epochs"]):
 
         discLoss = discB_fakes + discB_reals
 
-        discLoss.backward() # backprop of the discriminator loss (which also affects the generator)
+        discLoss.backward(retain_graph=True) # backprop of the discriminator loss (which also affects the generator)
         A2A_loss.backward() # backprop of the reconcstruction loss (affects generators only)
+
+        optimizerDisB.step()
+        optimizerGen_A2B.step()
+        optimizerGen_B2A.step()
 
 print("finished training")

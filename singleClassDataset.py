@@ -13,10 +13,11 @@ class singleClassDataset(Dataset):
     Initialize two, one from each domain, for unpaired image translation
 
     """
-    def __init__(self, path, split="trainset", classname="colourGogh", dimensions=(256,256)):
+    def __init__(self, path, transforms=None, split="trainset", classname="colourGogh", dimensions=(256,256)):
         self.path = path
         self.split = split
         self.dimensions = dimensions
+        self.transforms = transforms
         self.classname = classname
         self.images = list(os.listdir(f"{path}/{split}/{classname}"))
 
@@ -25,8 +26,10 @@ class singleClassDataset(Dataset):
 
     def __getitem__(self, index):
         assert 0 <= index <= len(self.images) # make sure we're in bounds
-        image = Image.open(f"{self.path}/{self.split}/{self.classname}/{self.images[index]}")
-        image = image.resize(dimensions)
-
+        path = f"{self.path}/{self.split}/{self.classname}/{self.images[index]}"
+        image = Image.open(path).convert(mode="RGB") # some of openimages are not RGB
+        image = image.resize(self.dimensions)
+        if self.transforms:
+            image= self.transforms(image)
         # height, then width
-        return in_tensor
+        return image

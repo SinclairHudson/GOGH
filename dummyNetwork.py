@@ -11,7 +11,7 @@ import torch.nn.functional as F
 class DummyGenerator(nn.Module):
     def __init__(self, input_nc, output_nc):
         super(DummyGenerator, self).__init__()
-        self.conv1 = nn.Conv2d(input_nc, output_nc, 3)
+        self.conv1 = nn.Conv2d(input_nc, output_nc, 3, padding=1)
 
 
     def forward(self, x):
