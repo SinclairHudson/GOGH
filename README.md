@@ -6,7 +6,7 @@ This is an implementation of CycleGAN (and similar papers) in an attempt to tran
 
 - [x] Create Dataset (Remove black and white scenes and duplicate frames)
 - [x] Get the pipeline running on a trivial image size and trivial network size
-- [ ] Round out metrics and Weights and Biases graphics
+- [x] Round out metrics and Weights and Biases graphics
 - [ ] Increase network size to get passable results
 - [ ] Increase image size to get beautiful results
 
